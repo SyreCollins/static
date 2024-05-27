@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <p>Welcome, {{ request.user.username }}!</p>
+    <h2>Your Stores ({{ stores.count }})</h2>
+    <ul>
+        {% for store in stores %}
+            <li>{{ store.name }} - {% if store.is_active %}Active{% else %}Inactive{% endif %}</li>
+        {% endfor %}
+    </ul>
+    <h2>Recent Interactions</h2>
+    <ul>
+        {% for interaction in recent_interactions %}
+            <li>{{ interaction.email }} - {{ interaction.created_at }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Segment Distribution</h2>
+    <ul>
+        {% for segment in segment_distribution %}
+            <li>{{ segment.name }} - {{ segment.customer_count }} customers</li>
+        {% endfor %}
+    </ul>
+    <a href="/choose_store_method">Add Store</a>
+    <a href="/logout">Logout</a>
+</body>
+</html>
