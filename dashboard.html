@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contract AI Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: #f4f6f9;
+            color: #6B7A90;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-bar {
+            background-color: #182538;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-bar .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-bar .logo-container img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .nav-bar .profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-bar .profile img {
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .nav-bar .coins-link {
+            color: #fff;
+            text-decoration: underline;
+            margin-left: 20px;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1128px;
+            margin: 20px auto;
+            padding: 0 16px;
+        }
+
+        .upload-section, .result-section {
+            background-color: #fff;
+            border: 1px solid #e9edf3;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .upload-section input[type="file"] {
+            display: none;
+        }
+
+        .upload-section label {
+            display: block;
+            background-color: #535fd7;
+            color: #fff;
+            padding: 12px 24px;
+            text-align: center;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: background-color 0.3s;
+        }
+
+        .upload-section label:hover {
+            background-color: #404cb3;
+        }
+
+        .upload-section .file-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #6B7A90;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #e9edf3;
+            border-radius: 4px;
+            background-color: #f8f9fb;
+        }
+
+        .upload-section .file-info .remove-file {
+            background: none;
+            border: none;
+            color: #e74c3c;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .result-section h2 {
+            margin-top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-section pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            background: #f8f9fb;
+            padding: 20px;
+            border: 1px solid #e9edf3;
+            border-radius: 4px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .icon-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-container button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: #6B7A90;
+            transition: color 0.3s;
+        }
+
+        .icon-container button:hover {
+            color: #182538;
+        }
+
+        .generate-button {
+            display: block;
+            background-color: #28a745;
+            color: #fff;
+            padding: 12px 24px;
+            text-align: center;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .generate-button span {
+            display: inline-block;
+        }
+
+        .generate-button.loading span {
+            visibility: hidden;
+        }
+
+        .generate-button.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 24px;
+            height: 24px;
+            border: 3px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        footer {
+            background-color: #182538;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="logo-container">
+            <img src="dist/images/logo-light.svg" alt="Logo">
+            <div class="logo">Contract AI</div>
+        </div>
+        <div class="profile">
+            <img src="https://via.placeholder.com/40" alt="Profile Picture">
+            <div>
+                <div>John Doe</div>
+                <div>Coins: 100 <span class="coins-link">Buy more</span></div>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="upload-section">
+            <h2>Upload Your Contract</h2>
+            <input type="file" id="file-input" />
+            <label for="file-input">Choose File</label>
+            <div class="file-info" id="file-info" style="display: none;">
+                <span id="file-details"></span>
+                <button class="remove-file" id="remove-file">&times;</button>
+            </div>
+            <a href="#" class="generate-button" id="generate-button" style="display: none;"><span>Generate</span></a>
+        </div>
+        <div class="result-section" id="result-section">
+            <h2>Contract Details
+                <div class="icon-container">
+                    <button id="regenerate-button" title="Regenerate"><i class="fas fa-redo"></i></button>
+                    <button id="copy-button" title="Copy"><i class="fas fa-copy"></i></button>
+                    <button id="download-button" title="Download"><i class="fas fa-download"></i></button>
+                </div>
+            </h2>
+            <pre id="result-display">No contract uploaded yet.</pre>
+        </div>
+    </div>
+    <footer>
+        © 2024 Contract AI. All rights reserved.
+    </footer>
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const fileInfo = document.getElementById('file-info');
+        const fileDetails = document.getElementById('file-details');
+        const removeFileButton = document.getElementById('remove-file');
+        const generateButton = document.getElementById('generate-button');
+        const resultDisplay = document.getElementById('result-display');
+        const regenerateButton = document.getElementById('regenerate-button');
+        const copyButton = document.getElementById('copy-button');
+        const downloadButton = document.getElementById('download-button');
+
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                fileDetails.textContent = `File: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+                fileInfo.style.display = 'flex';
+                generateButton.style.display = 'block';
+            } else {
+                fileInfo.style.display = 'none';
+                generateButton.style.display = 'none';
+            }
+        });
+
+        removeFileButton.addEventListener('click', function() {
+            fileInput.value = '';
+            fileInfo.style.display = 'none';
+            generateButton.style.display = 'none';
+            resultDisplay.textContent = 'No contract uploaded yet.';
+        });
+
+        generateButton.addEventListener('click', async function() {
+            generateButton.classList.add('loading');
+            generateButton.disabled = true;
+
+            const file = fileInput.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const token = localStorage.getItem('authToken');
+
+                try {
+                    const response = await fetch('http://127.0.0.1:8000/api/analyze/', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        resultDisplay.textContent = JSON.stringify(result, null, 2);
+                    } else {
+                        const errorText = await response.text();
+                        resultDisplay.textContent = `Error: ${errorText}`;
+                    }
+                } catch (error) {
+                    resultDisplay.textContent = 'Network error. Please try again.';
+                }
+            }
+
+            generateButton.classList.remove('loading');
+            generateButton.disabled = false;
+        });
+
+        regenerateButton.addEventListener('click', function() {
+            fileInput.value = '';
+            fileInfo.style.display = 'none';
+            generateButton.style.display = 'none';
+            resultDisplay.textContent = 'No contract uploaded yet.';
+        });
+
+        copyButton.addEventListener('click', function() {
+            const text = resultDisplay.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Result copied to clipboard');
+            }).catch(err => {
+                alert('Failed to copy: ', err);
+            });
+        });
+
+        downloadButton.addEventListener('click', function() {
+            const text = resultDisplay.textContent;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'contract_analysis.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>
